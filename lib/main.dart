@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +23,32 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _showControl = false;
+  bool _showYour = false;
+  bool _showBike = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Start the animation sequence
+    Timer(const Duration(milliseconds: 1500), () {
+      if (mounted) setState(() => _showControl = true);
+      Timer(const Duration(milliseconds: 300), () {
+        if (mounted) setState(() => _showYour = true);
+        Timer(const Duration(milliseconds: 300), () {
+          if (mounted) setState(() => _showBike = true);
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +59,13 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // Gradient bar (height reduced)
+            // Gradient bar
             Positioned(
-              top: 16.0, // Aligned with the top of the notification icon's padding
+              top: 16.0,
               left: screenWidth * 0.375,
               right: screenWidth * 0.375,
               child: Container(
-                height: screenHeight * 0.3, // Reduced height
+                height: screenHeight * 0.3,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [const Color(0xFFD5FF40).withAlpha(204), Colors.black],
@@ -73,7 +99,6 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Top row: Notification Icon Only
                   const Align(
                     alignment: Alignment.centerRight,
                     child: Icon(
@@ -83,49 +108,40 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 15), // Move text block further up
+                  const SizedBox(height: 15),
 
-                  // Greeting Text (aligned with title)
-                  const Padding(
-                    padding: EdgeInsets.only(left: 30.0),
-                    child: Text(
-                      'Hello Mefby!',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 22,
-                        fontWeight: FontWeight.w400,
-                      ),
+                  // Greeting Text
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TypewriterAnimatedText(
+                          'Hello Mefby!',
+                          textStyle: const TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          speed: const Duration(milliseconds: 100),
+                        ),
+                      ],
+                      totalRepeatCount: 1, // Only run once
+                      isRepeatingAnimation: false,
                     ),
                   ),
 
-                  const SizedBox(height: 8), // Space between greeting and title
+                  const SizedBox(height: 8),
 
-                  // Main Title Text (Slightly smaller)
+                  // Main Title Text
                   Padding(
                     padding: const EdgeInsets.only(left: 30.0),
-                    child: RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 62,
-                          fontWeight: FontWeight.w400,
-                          height: 1.0,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Control\n',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: 'Your\n',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: 'Bike',
-                            style: TextStyle(color: Color(0xFFD5FF40)),
-                          ),
-                        ],
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AnimatedTextSlide(show: _showControl, text: 'Control', style: const TextStyle(color: Colors.white)),
+                        AnimatedTextSlide(show: _showYour, text: 'Your', style: const TextStyle(color: Colors.white)),
+                        AnimatedTextSlide(show: _showBike, text: 'Bike', style: const TextStyle(color: Color(0xFFD5FF40))),
+                      ],
                     ),
                   ),
 
@@ -173,6 +189,41 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// Helper Widget for the slide-in animation
+class AnimatedTextSlide extends StatelessWidget {
+  const AnimatedTextSlide({
+    super.key,
+    required this.show,
+    required this.text,
+    required this.style,
+  });
+
+  final bool show;
+  final String text;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      opacity: show ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 300),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        transform: Matrix4.translationValues(0, show ? 0 : 30, 0),
+        child: Text(
+          text,
+          style: style.copyWith(
+            fontFamily: 'Montserrat',
+            fontSize: 62,
+            fontWeight: FontWeight.w400,
+            height: 1.0,
+          ),
         ),
       ),
     );
