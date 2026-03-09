@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
-        textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
+        fontFamily: 'Montserrat',
       ),
       home: const HomeScreen(),
     );
@@ -61,7 +60,9 @@ class HomeScreen extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/motor.png',
                   fit: BoxFit.contain,
-                  opacity: const AlwaysStoppedAnimation(0.7),
+                  opacity: const AlwaysStoppedAnimation(0.4),
+                  color: Colors.black.withValues(alpha: 0.3),
+                  colorBlendMode: BlendMode.darken,
                 ),
               ),
             ),
@@ -85,11 +86,12 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 15), // Move text block further up
 
                   // Greeting Text (aligned with title)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30.0),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 30.0),
                     child: Text(
                       'Hello Mefby!',
-                      style: GoogleFonts.montserrat(
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
                         fontSize: 22,
                         fontWeight: FontWeight.w400,
                       ),
@@ -102,13 +104,14 @@ class HomeScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 30.0),
                     child: RichText(
-                      text: TextSpan(
-                        style: GoogleFonts.montserrat(
+                      text: const TextSpan(
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
                           fontSize: 62,
                           fontWeight: FontWeight.w400,
                           height: 1.0,
                         ),
-                        children: const [
+                        children: [
                           TextSpan(
                             text: 'Control\n',
                             style: TextStyle(color: Colors.white),
@@ -154,7 +157,8 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 20),
                         Text(
                           'Hold to unlock bike',
-                          style: GoogleFonts.montserrat(
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
                             color: Colors.white.withAlpha(179),
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
